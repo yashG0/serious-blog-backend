@@ -13,7 +13,7 @@ async def upload_image_handler(image: UploadFile, upload_dir: str = "static/imag
 
     # Validate image file type based on the file extension
     allowed_extensions = ["jpeg", "png", "jpg"]
-    file_extension = os.path.splitext(image.filename)[1].lower().strip('.')
+    file_extension = os.path.splitext(image.filename)[1].lower().strip('.') #type:ignore
 
     if file_extension not in allowed_extensions:
         logger.warning(f"Invalid file extension: {file_extension}")

@@ -1,5 +1,4 @@
 from os import getenv
-
 from jose import jwt
 
 SECRET_KEY = getenv("SECRET_KEY_JWT", "my-secret-key")

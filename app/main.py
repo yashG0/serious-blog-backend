@@ -2,8 +2,12 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from .routes import auth_router, user_router, category_router, post_router, comment_router, admin_router
 from .db.config import base, engine
+from dotenv import load_dotenv
+
 
 base.metadata.create_all(bind=engine)
+
+load_dotenv()
 
 app = FastAPI(
     title="BlogMaster APP",
