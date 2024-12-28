@@ -100,17 +100,15 @@ async def update_post_by_id(new_post_data: PostOutSchema, post_id: UUID, db: Ses
 @post_route.delete("/remove/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_post_by_id(post_id: UUID,
                             db: Session = Depends(get_db),
-                            is_admin: UserOutSchema = Depends(check_admin),
                             current_user: UserOutSchema = Depends(get_current_user)):
-    if is_admin:
-        is_post = db.query(Post).filter(Post.user_id == current_user.id).filter(Post.id == post_id).all()  # type:ignore
+    is_post = db.query(Post).filter(Post.user_id == current_user.id).filter(Post.id == post_id).first()  # type:ignore
 
-        if is_post is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post {post_id} does not found")
-        try:
-            db.delete(is_post)
-            db.commit()
-            logger.info(f"Post {post_id} removed successfully!")
-        except Exception as e:
-            logger.error(f"Failed to remove post: {is_post.title}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to remove post: {e}")
+    if is_post is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post {post_id} does not found")
+    try:
+        db.delete(is_post)
+        db.commit()
+        logger.info(f"Post {post_id} removed successfully!")
+    except Exception as e:
+        logger.error(f"Failed to remove post: {post_id}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to remove post: {e}")

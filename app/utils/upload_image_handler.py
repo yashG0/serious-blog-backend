@@ -40,4 +40,4 @@ async def upload_image_handler(image: UploadFile, upload_dir: str = "static/imag
             detail=f"Failed to save image: {e}"
         )
 
-    return unique_filename
+    return file_location
