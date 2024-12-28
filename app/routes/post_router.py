@@ -64,6 +64,18 @@ async def get_post_by_id(db: Session = Depends(get_db), current_user: UserOutSch
     return fetch_posts_of_user
 
 
+@post_route.get("/all/by_category/{category_id}", response_model=list[PostOutSchema], status_code=status.HTTP_200_OK)
+async def get_post_by_id(category_id: UUID, db: Session = Depends(get_db)):
+    is_category = db.query(Category).filter(Category.id == category_id).first()  # type:ignore
+
+    if is_category is None:
+        logger.warning("Category does not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Category {category_id} does not found")
+
+    all_posts_by_category = db.query(Post).filter(Post.category_id == category_id).all()  # type:ignore
+    return all_posts_by_category
+
+
 @post_route.get("/by_user/{post_id}", response_model=PostOutSchema, status_code=status.HTTP_200_OK)
 async def get_post_by_id(post_id: UUID, db: Session = Depends(get_db),
                          current_user: UserOutSchema = Depends(get_current_user)):
